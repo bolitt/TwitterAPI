@@ -11,6 +11,13 @@
 
 This Python package supports Twitter's REST and Streaming APIs (version 1.1) with OAuth 1.0 or OAuth 2.0.  It works with the latest Python versions in both 2.x and 3.x branches.  
 
+Versions
+---------------------
+This is an version improved by bolitt <bolitt@gmail.com>, that enhances functionalities on search.
+
+It is forked from the original version (v2.3.3, 21 Mar 2015) owned by geduldig <https://github.com/geduldig> under MIT license.
+
+
 Some Code Examples
 ------------------
 [See `TwitterAPI/examples <https://github.com/geduldig/TwitterAPI/tree/master/examples>`_ for working examples.]
@@ -66,6 +73,10 @@ Installation
 From the command line::
 
 	pip install TwitterAPI
+
+or::
+
+	python setup.py install
 
 Documentation
 -------------
