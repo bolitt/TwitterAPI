@@ -4,7 +4,7 @@ import codecs
 import sys
 from pprint import pprint
 from google_translator import translate
-from .config import CONSUMER_KEY, CONSUMER_SECRET, ACCESS_TOKEN_KEY, ACCESS_TOKEN_SECRET
+from config import CONSUMER_KEY, CONSUMER_SECRET, ACCESS_TOKEN_KEY, ACCESS_TOKEN_SECRET
 
 SEARCH_TERM = 'Coronation Night'  # 'pizza'
 MAX_COUNT = 100
