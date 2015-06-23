@@ -15,6 +15,7 @@ import requests
 import socket
 import ssl
 import time
+import urlparse
 
 
 class TwitterAPI(object):
@@ -92,7 +93,7 @@ class TwitterAPI(object):
         session = requests.Session()
         session.auth = self.auth
         session.headers = {'User-Agent': USER_AGENT}
-        method, subdomain = ENDPOINTS[endpoint]
+        method, subdomain, klass = ENDPOINTS[endpoint]
         url = self._prepare_url(subdomain, resource)
         if 'stream' in subdomain:
             session.stream = True
@@ -122,7 +123,11 @@ class TwitterAPI(object):
         except (ConnectionError, ProtocolError, ReadTimeout, ReadTimeoutError, 
                 SSLError, ssl.SSLError, socket.error) as e:
             raise TwitterConnectionError(e)
-        return TwitterResponse(r, session.stream)
+        if klass is None:
+            return TwitterResponse(r, session.stream)
+        else:
+            ctor = globals()[klass]
+            return ctor(r, session.stream)
 
 
 class TwitterResponse(object):
@@ -185,11 +190,36 @@ class TwitterResponse(object):
             if 'x-rate-limit-remaining' in self.response.headers:
                 remaining = int(
                     self.response.headers['x-rate-limit-remaining'])
-                if remaining == 0:
-                    limit = int(self.response.headers['x-rate-limit-limit'])
-                    reset = int(self.response.headers['x-rate-limit-reset'])
-                    reset = datetime.fromtimestamp(reset)
+                #if remaining == 0: Tian: Bug
+                limit = int(self.response.headers['x-rate-limit-limit'])
+                reset = int(self.response.headers['x-rate-limit-reset'])
+                reset = datetime.fromtimestamp(reset)
         return {'remaining': remaining, 'limit': limit, 'reset': reset}
+
+
+class SearchResponse(TwitterResponse):
+    """SearchResponse: derived from TwitterResponse """
+    def __init__(self, *args, **kwargs):
+        super(SearchResponse, self).__init__(*args, **kwargs)
+
+    def get_search_metadata(self):
+        # ret = {
+        #     'max_id': None,
+        #     'since_id': None,
+        #     'refresh_url': None,
+        #     'next_results': None,
+        #     'count': None,
+        #     'completed_in': None,
+        #     'since_id_str': None,
+        #     'query': None,
+        #     'max_id_str': None,
+        # }
+        resp = self.json()
+        return resp['search_metadata']
+
+    def parse_query_string(self, url):
+        # parse_query_string
+        return urlparse.parse_qs(urlparse.urlparse(url).query)
 
 
 class _RestIterable(object):

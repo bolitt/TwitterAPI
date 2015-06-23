@@ -26,7 +26,7 @@ STREAMING_TIMEOUT = 90
 REST_TIMEOUT = 5
 
 ENDPOINTS = {
-    # resource:                                (method, subdomain)
+    # resource:                                (method, subdomain, klass(optional))
 
     'statuses/filter':                         ('POST', 'stream'),
     'statuses/firehose':                       ('GET',  'stream'),
@@ -119,7 +119,7 @@ ENDPOINTS = {
     'saved_searches/list':                     ('GET',  'api'),
     'saved_searches/show/:PARAM':              ('GET',  'api'), # ID
 
-    'search/tweets':                           ('GET',  'api'),
+    'search/tweets':                           ('GET',  'api', 'SearchResponse'),
 
     'statuses/destroy/:PARAM':                 ('POST', 'api'), # ID
     'statuses/home_timeline':                  ('GET',  'api'),
